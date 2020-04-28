@@ -84,7 +84,7 @@ jobs:
             -scheme Chart\ of\ the\ Nuclides \
             -sdk iphoneos \
             -configuration Release \
-           DEVELOPEMENT_TEAM="$DEVELOPEMENT_TEAM" \
+           DEVELOPEMENT_TEAM=$DEVELOPMENT_TEAM \
             -archivePath $PWD/Chart\ of\ the\ Nuclides.xcarchive
         
     - name: Create ipa
@@ -93,7 +93,7 @@ jobs:
       run: |
         cd bechtel.echartmobile/platforms/ios
         xcodebuild -exportArchive \
-          DEVELOPEMENT_TEAM="$DEVELOPEMENT_TEAM" \
+          DEVELOPEMENT_TEAM=$DEVELOPMENT_TEAM \
           -archivePath ./Chart\ of\ the\ Nuclides.xcarchive \
           -exportOptionsPlist exportOptions.plist \
           -exportPath exportPath -allowProvisioningUpdates
