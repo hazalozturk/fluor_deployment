@@ -24,7 +24,7 @@ jobs:
     
     # Clone from assembla
     - name: Clone from assembla
-      run: git clone https://${{secrets.ASSEMBLA_EMAIL}}:${{secrets.ASSEMBLA_API_SECRET}}@git.assembla.com/troyweb/bechtel.echartmobile.git
+      run: git clone https://${{secrets.ASSEMBLA_EMAIL}}:${{secrets.ASSEMBLA_API_SECRET}}@assembla.com/troyweb/bechtel.echartmobile.git
 
     # Runs a single command using the runners shell
     - name: Run a one-line script
