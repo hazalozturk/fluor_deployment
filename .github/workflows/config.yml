@@ -87,6 +87,7 @@ jobs:
             -sdk iphoneos \
             -configuration Release \
             DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM \
+            -allowProvisioningUpdates \
             -archivePath $PWD/Chart\ of\ the\ Nuclides.xcarchive
         
     - name: Create ipa
