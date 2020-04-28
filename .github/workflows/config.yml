@@ -93,8 +93,8 @@ jobs:
       run: |
         cd bechtel.echartmobile/platforms/ios
         xcodebuild -exportArchive \
-          -archivePath ./Chart\ of\ the\ Nuclides.xcarchive \
           DEVELOPEMENT_TEAM=$DEVELOPEMENT_TEAM
+          -archivePath ./Chart\ of\ the\ Nuclides.xcarchive \
           -exportOptionsPlist exportOptions.plist \
           -exportPath exportPath -allowProvisioningUpdates
         
