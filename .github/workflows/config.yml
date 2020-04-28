@@ -22,6 +22,9 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
+    - name: Set user email
+      run: git config --global ${{ASSEMBLA_EMAIL}}
+    
     # Clone from assembla
     - name: Clone from assembla
       run: git clone https://git.assembla.com/troyweb/bechtel.echartmobile.git
