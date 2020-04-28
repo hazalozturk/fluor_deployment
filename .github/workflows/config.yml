@@ -36,5 +36,10 @@ jobs:
     - name: Install npm dependencies
       run: |
         cd bechtel.echartmobile/nuclide_leaflet
+        npm install
+        
+    - name: Build mobile app
+      run: |
+        cd bechtel.echartmobile/nuclide_leaflet
         npm run build:mobile
         
