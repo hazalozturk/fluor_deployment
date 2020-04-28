@@ -30,6 +30,12 @@ jobs:
         cd bechtel.echartmobile
         git checkout develop
     
+    - name: Install root dependencies
+      run: |
+        cd bechtel.echartmobile
+        npm install
+        cordova platform add ios
+
     - name: Install react-scripts
       run: npm install -g react-scripts
 
@@ -38,9 +44,14 @@ jobs:
         cd bechtel.echartmobile/nuclide_leaflet
         npm install
         
-    - name: Build mobile app
+    - name: Compile mobile app
       env:
         CI: ""
       run: |
         cd bechtel.echartmobile/nuclide_leaflet
         npm run build:mobile
+        
+    - name: Build mobile app with cordova
+      run: |
+        cd bechtel.echartmobile
+        cordova build
