@@ -41,5 +41,7 @@ jobs:
     - name: Build mobile app
       run: |
         cd bechtel.echartmobile/nuclide_leaflet
-        npm run build:mobile
-        
+        react-scripts build
+        node scripts/insert-cordova.js
+        npm run remove:www
+        cp -a ./build/. ../www/        
