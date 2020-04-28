@@ -33,6 +33,7 @@ jobs:
     - name: Install root dependencies
       run: |
         cd bechtel.echartmobile
+        npm install -g cordova
         npm install
         cordova platform add ios
 
