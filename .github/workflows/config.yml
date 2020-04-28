@@ -89,6 +89,7 @@ jobs:
         cd bechtel.echartmobile/platforms/ios
         xcodebuild -exportArchive \
           -archivePath ./Chart\ of\ the\ Nuclides.xcarchive \
+          DEVELOPMENT_TEAM = ${{ secrets.TEAM_ID }} \
           -exportOptionsPlist exportOptions.plist \
           -exportPath exportPath -allowProvisioningUpdates
         
