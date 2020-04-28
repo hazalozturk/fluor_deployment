@@ -39,11 +39,8 @@ jobs:
         npm install
         
     - name: Build mobile app
+      env:
+        CI: ""
       run: |
         cd bechtel.echartmobile/nuclide_leaflet
-        react-scripts build
-        
-    - name: Build mobile appf
-      run: |
-        cd bechtel.echartmobile/nuclide_leaflet
-        node scripts/insert-cordova.js
+        npm run build:mobile
