@@ -27,7 +27,7 @@ jobs:
       env:
         USERNAME: ${{ secrets.ASSEMBLA_API_KEY }}
         PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
-      run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git
+      run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git"
 
     # Runs a single command using the runners shell
     - name: Run a one-line script
