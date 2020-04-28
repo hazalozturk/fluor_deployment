@@ -42,6 +42,8 @@ jobs:
       run: |
         cd bechtel.echartmobile/nuclide_leaflet
         react-scripts build
+        
+    - name: Build mobile appf
+      run: |
+        cd bechtel.echartmobile/nuclide_leaflet
         node scripts/insert-cordova.js
-        npm run remove:www
-        cp -a ./build/. ../www/        
