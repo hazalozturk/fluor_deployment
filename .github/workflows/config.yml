@@ -75,22 +75,24 @@ jobs:
         xcodebuild clean -project Chart\ of\ the\ Nuclides.xcodeproj -scheme Chart\ of\ the\ Nuclides
     
     - name: Archive App
+      env: 
+        DEVELOPMENT_TEAM: ${{ secrets.TEAM_ID }}
       run: |
           cd bechtel.echartmobile/platforms/ios
           xcodebuild archive \
             -project Chart\ of\ the\ Nuclides.xcodeproj \
             -scheme Chart\ of\ the\ Nuclides \
-            DEVELOPMENT_TEAM = ${{ secrets.TEAM_ID }}
             -sdk iphoneos \
             -configuration Release \
             -archivePath $PWD/Chart\ of\ the\ Nuclides.xcarchive
         
     - name: Create ipa
+      env: 
+        DEVELOPMENT_TEAM: ${{ secrets.TEAM_ID }}
       run: |
         cd bechtel.echartmobile/platforms/ios
         xcodebuild -exportArchive \
           -archivePath ./Chart\ of\ the\ Nuclides.xcarchive \
-          DEVELOPMENT_TEAM = ${{ secrets.TEAM_ID }} \
           -exportOptionsPlist exportOptions.plist \
           -exportPath exportPath -allowProvisioningUpdates
         
