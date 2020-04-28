@@ -68,4 +68,27 @@ jobs:
         ./.github/secrets/decrypt_secrets.sh
       env:
         IOS_PROFILE_KEY: ${{ secrets.IOS_PROFILE_KEY }}
- 
+    
+    - name: Clean project build folder
+      run: |
+        cd bechtel.echartmobile/platforms/ios
+        xcodebuild clean -project Chart\ of\ the\ Nuclides.xcodeproj -scheme Chart\ of\ the\ Nuclides
+    
+    - name: Archive App
+      run: |
+          cd bechtel.echartmobile/platforms/ios
+          xcodebuild archive \
+            -project Chart\ of\ the\ Nuclides.xcodeproj \
+            -scheme Chart\ of\ the\ Nuclides \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath $PWD/Chart\ of\ the\ Nuclides.xcarchive
+        
+    - name: Create ipa
+      run: |
+        cd bechtel.echartmobile/platforms/ios
+        xcodebuild -exportArchive \
+          -archivePath ./Chart\ of\ the\ Nuclides.xcarchive \
+          -exportOptionsPlist exportOptions.plist \
+          -exportPath exportPath -allowProvisioningUpdates
+        
