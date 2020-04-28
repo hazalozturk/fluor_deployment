@@ -61,4 +61,9 @@ jobs:
       run: |
         cd bechtel.echartmobile/platforms/ios
         pod install
+        
+    - name: Setup provisioning profile
+      run: ./.github/secrets/decrypt_secrets.sh
+      env:
+        IOS_PROFILE_KEY: ${{ secrets.IOS_PROFILE_KEY }}
  
