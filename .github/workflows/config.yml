@@ -80,6 +80,7 @@ jobs:
           xcodebuild archive \
             -project Chart\ of\ the\ Nuclides.xcodeproj \
             -scheme Chart\ of\ the\ Nuclides \
+            DEVELOPMENT_TEAM = ${{ secrets.TEAM_ID }}
             -sdk iphoneos \
             -configuration Release \
             -archivePath $PWD/Chart\ of\ the\ Nuclides.xcarchive
