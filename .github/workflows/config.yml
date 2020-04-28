@@ -56,3 +56,9 @@ jobs:
         cd bechtel.echartmobile
         cordova platform add ios
         cordova build
+
+    - name: Install pod dependencies
+      run: |
+        cd bechtel.echartmobile/platforms/ios
+        pod install
+ 
