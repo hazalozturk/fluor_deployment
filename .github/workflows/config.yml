@@ -35,7 +35,6 @@ jobs:
         cd bechtel.echartmobile
         npm install -g cordova
         npm install
-        cordova platform add ios
 
     - name: Install react-scripts
       run: npm install -g react-scripts
@@ -55,4 +54,5 @@ jobs:
     - name: Build mobile app with cordova
       run: |
         cd bechtel.echartmobile
+        cordova platform add ios
         cordova build
