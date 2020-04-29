@@ -18,6 +18,10 @@ jobs:
       with:
         node-version: 10.x
         
+    - name : Install Fastlane
+      run: 
+        brew install fastlane
+
     # Clone from assembla
     - name: Clone from assembla
       env:
@@ -28,7 +32,7 @@ jobs:
     - name: Checkout develop branch
       run: |
         cd bechtel.echartmobile
-        git checkout develop
+        git checkout fastlane
     
     - name: Install root dependencies
       run: |
@@ -59,45 +63,26 @@ jobs:
         sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
         cordova build
 
+    - name: Copy fastlane folder to platforms/ios
+      env:
+        FASTLANE_APPFILE_TESTFLIGHT: ${{ secrets.FASTLANE_APPFILE_TESTFLIGHT }}
+      run: | 
+        cd bechtel.echartmobile
+        cp -r fastlane platforms/ios/
+        echo $FASTLANE_APPFILE_TESTFLIGHT > platforms/ios/fastlane/Appfile
+        
     - name: Install pod dependencies
       run: |
         cd bechtel.echartmobile/platforms/ios
         pod install
         
-    - name: Setup provisioning profile
-      run: |
-        chmod +x .github/secrets/decrypt_secrets.sh
-        ./.github/secrets/decrypt_secrets.sh
-      env:
-        IOS_PROFILE_KEY: ${{ secrets.IOS_PROFILE_KEY }}
-    
-    - name: Clean project build folder
+    - name: Build with fastlane
       run: |
         cd bechtel.echartmobile/platforms/ios
-        xcodebuild clean -project Chart\ of\ the\ Nuclides.xcodeproj -scheme Chart\ of\ the\ Nuclides
-    
-    - name: Archive App
-      env: 
-        DEVELOPMENT_TEAM: ${{ secrets.TEAM_ID }}
-      run: |
-          cd bechtel.echartmobile/platforms/ios
-          xcodebuild archive \
-            -project Chart\ of\ the\ Nuclides.xcodeproj \
-            -scheme Chart\ of\ the\ Nuclides \
-            -sdk iphoneos \
-            -configuration Release \
-            DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM \
-            -allowProvisioningUpdates \
-            -archivePath $PWD/Chart\ of\ the\ Nuclides.xcarchive
+        fastlane ios beta
         
-    - name: Create ipa
-      env: 
-        DEVELOPMENT_TEAM: ${{ secrets.TEAM_ID }}
+    - name: Deploy to testflight with fastlane
       run: |
         cd bechtel.echartmobile/platforms/ios
-        xcodebuild -exportArchive \
-          DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM \
-          -archivePath ./Chart\ of\ the\ Nuclides.xcarchive \
-          -exportOptionsPlist exportOptions.plist \
-          -exportPath exportPath -allowProvisioningUpdates
-        
+        fastlane ios upload
+
