@@ -84,11 +84,7 @@ jobs:
       env:
         FASTLANE_APPFILE_TESTFLIGHT: ${{ secrets.FASTLANE_APPFILE_TESTFLIGHT }}
       working-directory: bechtel.echartmobile
-      run: |
-        #        cp -r fastlane platforms/ios/
-        echo $FASTLANE_APPFILE_TESTFLIGHT > fastlane/Appfile
-        ## Show me the appfile
-        cat fastlane/Appfile
+      run: echo $FASTLANE_APPFILE_TESTFLIGHT > fastlane/Appfile
 
     - name: Install pod dependencies
       working-directory: bechtel.echartmobile/platforms/ios
