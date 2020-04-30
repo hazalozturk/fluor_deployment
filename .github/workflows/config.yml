@@ -40,6 +40,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: project
+        path: bechtel.echartmobile
 
     - name: Cache Root Node Modules
       uses: actions/cache@v1
@@ -74,6 +75,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: project
+        path: bechtel.echartmobile
 
     - name: Cache Leaflet Node Modules
       uses: actions/cache@v1
@@ -84,7 +86,6 @@ jobs:
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/nuclide_leaflet/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
-
 
     - name: Install leaflet dependencies
       working-directory: bechtel.echartmobile/nuclide_leaflet
@@ -119,16 +120,19 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: project
+        path: bechtel.echartmobile
 
     - name: Download Root Dependencies
       uses: actions/download-artifact@v1
       with:
         name: root-dependencies
+        path: bechtel.echartmobile/node_modules
 
     - name: Download Leaflet Dependencies
       uses: actions/download-artifact@v1
       with:
         name: leaflet-dependencies
+        path: bechtel.echartmobile/nuclide_leaflet/node_modules
 
     - name: Compile mobile app
       env:
