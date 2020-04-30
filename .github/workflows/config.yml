@@ -107,7 +107,7 @@ jobs:
       run: |
         cordova platform add ios
         sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
-        cordova build
+        #    cordova build
 
     - name: Create Appfile
       env:
@@ -120,9 +120,15 @@ jobs:
       run: pod install
 
     - name: Build with fastlane
+      env:
+        FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+        FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
       working-directory: bechtel.echartmobile
       run: fastlane ios beta
 
     - name: Deploy to testflight with fastlane
+      env:
+        FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+        FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
       working-directory: bechtel.echartmobile
       run: fastlane ios upload
