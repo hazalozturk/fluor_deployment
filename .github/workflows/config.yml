@@ -7,22 +7,26 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    runs-on: macOS-latest
-
+  setup-node:
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
     - name: Use Node.js 10.x
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
 
-    - name : Install Fastlane
-      run:
-        brew install fastlane
+  setup:
+    - name: Install Fastlane
+      run: brew install fastlane
 
-    # Clone from assembla
+    - name: Install Cordova
+      run: npm install -g cordova
+
+    - name: Install react-scripts
+      run: npm install -g react-scripts
+
+  clone:
+    steps:
+    - uses: actions/checkout@v2
     - name: Clone from assembla
       env:
         USERNAME: ${{ secrets.ASSEMBLA_USER_NAME }}
@@ -30,35 +34,59 @@ jobs:
       run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git"
 
     - name: Checkout develop branch
-      run: |
-        cd bechtel.echartmobile
-        git checkout fastlane
+      working-directory: bechtel.echartmobile
+      run: git checkout fastlane
+
+  root-dependencies:
+    needs: [clone, setup-node]
+    steps:
+    - name: Cache Root Node Modules
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-root-node-modules
+      with:
+        path: bechtel.echartmobile
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
 
     - name: Install root dependencies
-      run: |
-        cd bechtel.echartmobile
-        npm install -g cordova
-        npm install
+      working-directory: bechtel.echartmobile
+      run: npm install
 
-    - name: Install react-scripts
-      run: npm install -g react-scripts
+  leaflet-dependencies:
+    needs: [clone, setup-node]
+    steps:
+    - name: Cache Leaflet Node Modules
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-leaflet-node-modules
+      with:
+        path: bechtel.echartmobile/nuclide_leaflet
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/nuclide_leaflet/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
 
-    - name: Install npm dependencies
-      run: |
-        cd bechtel.echartmobile/nuclide_leaflet
-        npm install
+    - name: Install leaflet dependencies
+      working-directory: bechtel.echartmobile/nuclide_leaflet
+      run: npm install
 
+
+  build:
+    needs: [setup, root-dependencies, leaflet-dependencies]
+    runs-on: macOS-latest
+
+    steps:
     - name: Compile mobile app
       env:
         CI: ""
-      run: |
-        cd bechtel.echartmobile/nuclide_leaflet
-        npm run build:mobile
+      working-directory: bechtel.echartmobile/nuclide_leaflet
+      run: npm run build:mobile
 
     # https://stackoverflow.com/a/46823492/10680786
     - name: Build mobile app with cordova
+      working-directory: bechtel.echartmobile
       run: |
-        cd bechtel.echartmobile
         cordova platform add ios
         sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
         cordova build
@@ -66,24 +94,21 @@ jobs:
     - name: Copy fastlane folder to platforms/ios
       env:
         FASTLANE_APPFILE_TESTFLIGHT: ${{ secrets.FASTLANE_APPFILE_TESTFLIGHT }}
+      working-directory: bechtel.echartmobile
       run: |
-        #        cd bechtel.echartmobile
         #        cp -r fastlane platforms/ios/
         echo $FASTLANE_APPFILE_TESTFLIGHT > fastlane/Appfile
+        ## Show me the appfile
         cat fastlane/Appfile
 
     - name: Install pod dependencies
-      run: |
-        cd bechtel.echartmobile/platforms/ios
-        pod install
+      working-directory: bechtel.echartmobile/platforms/ios
+      run: pod install
 
     - name: Build with fastlane
-      run: |
-        cd bechtel.echartmobile/platforms/ios
-        fastlane ios beta
+      working-directory: bechtel.echartmobile
+      run: fastlane ios beta
 
     - name: Deploy to testflight with fastlane
-      run: |
-        cd bechtel.echartmobile/platforms/ios
-        fastlane ios upload
-
+      working-directory: bechtel.echartmobile
+      run: fastlane ios upload
