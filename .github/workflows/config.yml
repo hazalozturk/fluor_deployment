@@ -26,7 +26,7 @@ jobs:
       run: npm install -g react-scripts
 
     - name: Clone from assembla
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
       env:
         USERNAME: ${{ secrets.ASSEMBLA_USER_NAME }}
         PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
