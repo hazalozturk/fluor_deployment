@@ -7,23 +7,6 @@ on:
     branches: [ master ]
 
 jobs:
-  setup-node:
-    steps:
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-
-  setup:
-    - name: Install Fastlane
-      run: brew install fastlane
-
-    - name: Install Cordova
-      run: npm install -g cordova
-
-    - name: Install react-scripts
-      run: npm install -g react-scripts
-
   clone:
     steps:
     - uses: actions/checkout@v2
@@ -37,15 +20,31 @@ jobs:
       working-directory: bechtel.echartmobile
       run: git checkout fastlane
 
+    - name: Upload Project
+      uses: actions/upload-artifact@v1
+      with:
+        name: project
+        path: bechtel.echartmobile
+
   root-dependencies:
-    needs: [clone, setup-node]
+    needs: clone
     steps:
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
+    - name: Download project
+      uses: actions/download-artifact@v1
+      with:
+        name: project
+
     - name: Cache Root Node Modules
       uses: actions/cache@v1
       env:
         cache-name: cache-root-node-modules
       with:
-        path: bechtel.echartmobile
+        path: bechtel.echartmobile/node_modules
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -54,29 +53,80 @@ jobs:
       working-directory: bechtel.echartmobile
       run: npm install
 
+    - name: Upload Root Dependencies
+      uses: actions/upload-artifact@v1
+      with:
+        name: root-dependencies
+        path: bechtel.echartmobile/node_modules
+
   leaflet-dependencies:
-    needs: [clone, setup-node]
+    needs: clone
     steps:
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
+    - name: Download project
+      uses: actions/download-artifact@v1
+      with:
+        name: project
+
     - name: Cache Leaflet Node Modules
       uses: actions/cache@v1
       env:
         cache-name: cache-leaflet-node-modules
       with:
-        path: bechtel.echartmobile/nuclide_leaflet
+        path: bechtel.echartmobile/nuclide_leaflet/node_modules
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/nuclide_leaflet/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
+
 
     - name: Install leaflet dependencies
       working-directory: bechtel.echartmobile/nuclide_leaflet
       run: npm install
 
+    - name: Upload Leaflet Dependencies
+      uses: actions/upload-artifact@v1
+      with:
+        name: leaflet-dependencies
+        path: bechtel.echartmobile/nuclide_leaflet/node_modules
 
   build:
-    needs: [setup, root-dependencies, leaflet-dependencies]
+    needs: [root-dependencies, leaflet-dependencies]
     runs-on: macOS-latest
 
     steps:
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
+    - name: Install Fastlane
+      run: brew install fastlane
+
+    - name: Install Cordova
+      run: npm install -g cordova
+
+    - name: Install react-scripts
+      run: npm install -g react-scripts
+
+    - name: Download project
+      uses: actions/download-artifact@v1
+      with:
+        name: project
+
+    - name: Download Root Dependencies
+      uses: actions/download-artifact@v1
+      with:
+        name: root-dependencies
+
+    - name: Download Leaflet Dependencies
+      uses: actions/download-artifact@v1
+      with:
+        name: leaflet-dependencies
+
     - name: Compile mobile app
       env:
         CI: ""
