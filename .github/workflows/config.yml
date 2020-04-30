@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+  FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+  FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+  FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
+
 jobs:
   build-leaflet:
     runs-on: ubuntu-latest
@@ -120,17 +126,9 @@ jobs:
       run: pod install
 
     - name: Build with fastlane
-      env:
-        FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-        FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
-        FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
       working-directory: bechtel.echartmobile
       run: fastlane ios beta
 
     - name: Deploy to testflight with fastlane
-      env:
-        FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-        FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
-        FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
       working-directory: bechtel.echartmobile
       run: fastlane ios upload
