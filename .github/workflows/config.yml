@@ -7,21 +7,14 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    runs-on: macOS-latest
-
+  build-leaflet:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js 10.x
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-
-    - name: Install Fastlane
-      run: brew install fastlane
-
-    - name: Install Cordova
-      run: npm install -g cordova
 
     - name: Install react-scripts
       run: npm install -g react-scripts
@@ -35,21 +28,6 @@ jobs:
     - name: Checkout develop branch
       working-directory: bechtel.echartmobile
       run: git checkout fastlane
-
-    ## Install Root Dependencies
-    - name: Cache Root Node Modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-root-node-modules
-      with:
-        path: bechtel.echartmobile/node_modules
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-
-    - name: Install root dependencies
-      working-directory: bechtel.echartmobile
-      run: npm install
 
     ## Install Leaflet Dependencies
     - name: Cache Leaflet Node Modules
@@ -72,6 +50,57 @@ jobs:
       working-directory: bechtel.echartmobile/nuclide_leaflet
       run: npm run build:mobile
 
+    - name: Archive Leaflet Build
+      uses: actions/upload-artifact@v1
+      with:
+        name: leaflet-build
+        path: bechtel.echartmobile/nuclide_leaflet/build
+
+
+  build-ios:
+    runs-on: macOS-latest
+    needs: build-leaflet
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
+    - name: Clone from assembla
+      env:
+        USERNAME: ${{ secrets.ASSEMBLA_USER_NAME }}
+        PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
+      run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git"
+
+    - name: Checkout develop branch
+      working-directory: bechtel.echartmobile
+      run: git checkout fastlane
+
+    - name: Download Leaflet Build
+      uses: actions/download-artifact@v1
+      with:
+        name: leaflet-build
+        path: bechtel.echartmobile/nuclide_leaflet/build
+
+    ## Install Root Dependencies
+    - name: Cache Root Node Modules
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-root-node-modules
+      with:
+        path: bechtel.echartmobile/node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+
+    - name: Install root dependencies
+      working-directory: bechtel.echartmobile
+      run: npm install
+
+    - name: Install Cordova
+      run: npm install -g cordova
+
     # https://stackoverflow.com/a/46823492/10680786
     - name: Build mobile app with cordova
       working-directory: bechtel.echartmobile
@@ -80,11 +109,11 @@ jobs:
         sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
         cordova build
 
-    - name: Copy fastlane folder to platforms/ios
+    - name: Create Appfile
       env:
         FASTLANE_APPFILE_TESTFLIGHT: ${{ secrets.FASTLANE_APPFILE_TESTFLIGHT }}
-      working-directory: bechtel.echartmobile
-      run: echo $FASTLANE_APPFILE_TESTFLIGHT > fastlane/Appfile
+      working-directory: bechtel.echartmobile/fastlane
+      run: echo $FASTLANE_APPFILE_TESTFLIGHT > Appfile
 
     - name: Install pod dependencies
       working-directory: bechtel.echartmobile/platforms/ios
