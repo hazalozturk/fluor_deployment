@@ -7,98 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  clone:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Clone from assembla
-      env:
-        USERNAME: ${{ secrets.ASSEMBLA_USER_NAME }}
-        PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
-      run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git"
-
-    - name: Checkout develop branch
-      working-directory: bechtel.echartmobile
-      run: git checkout fastlane
-
-    - name: Upload Project
-      uses: actions/upload-artifact@v1
-      with:
-        name: project
-        path: bechtel.echartmobile
-
-  root-dependencies:
-    runs-on: ubuntu-latest
-    needs: clone
-    steps:
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-
-    - name: Download project
-      uses: actions/download-artifact@v1
-      with:
-        name: project
-        path: bechtel.echartmobile
-
-    - name: Cache Root Node Modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-root-node-modules
-      with:
-        path: bechtel.echartmobile/node_modules
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-
-    - name: Install root dependencies
-      working-directory: bechtel.echartmobile
-      run: npm install
-
-    - name: Upload Root Dependencies
-      uses: actions/upload-artifact@v1
-      with:
-        name: root-dependencies
-        path: bechtel.echartmobile/node_modules
-
-  leaflet-dependencies:
-    runs-on: ubuntu-latest
-    needs: clone
-    steps:
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-
-    - name: Download project
-      uses: actions/download-artifact@v1
-      with:
-        name: project
-        path: bechtel.echartmobile
-
-    - name: Cache Leaflet Node Modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-leaflet-node-modules
-      with:
-        path: bechtel.echartmobile/nuclide_leaflet/node_modules
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/nuclide_leaflet/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-
-    - name: Install leaflet dependencies
-      working-directory: bechtel.echartmobile/nuclide_leaflet
-      run: npm install
-
-    - name: Upload Leaflet Dependencies
-      uses: actions/upload-artifact@v1
-      with:
-        name: leaflet-dependencies
-        path: bechtel.echartmobile/nuclide_leaflet/node_modules
-
   build:
-    needs: [root-dependencies, leaflet-dependencies]
     runs-on: macOS-latest
 
     steps:
@@ -116,23 +25,46 @@ jobs:
     - name: Install react-scripts
       run: npm install -g react-scripts
 
-    - name: Download project
-      uses: actions/download-artifact@v1
-      with:
-        name: project
-        path: bechtel.echartmobile
+    - name: Clone from assembla
+    - uses: actions/checkout@v2
+      env:
+        USERNAME: ${{ secrets.ASSEMBLA_USER_NAME }}
+        PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
+      run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git"
 
-    - name: Download Root Dependencies
-      uses: actions/download-artifact@v1
+    - name: Checkout develop branch
+      working-directory: bechtel.echartmobile
+      run: git checkout fastlane
+
+    ## Install Root Dependencies
+    - name: Cache Root Node Modules
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-root-node-modules
       with:
-        name: root-dependencies
         path: bechtel.echartmobile/node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
 
-    - name: Download Leaflet Dependencies
-      uses: actions/download-artifact@v1
+    - name: Install root dependencies
+      working-directory: bechtel.echartmobile
+      run: npm install
+
+    ## Install Leaflet Dependencies
+    - name: Cache Leaflet Node Modules
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-leaflet-node-modules
       with:
-        name: leaflet-dependencies
         path: bechtel.echartmobile/nuclide_leaflet/node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bechtel.echartmobile/nuclide_leaflet/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+
+    - name: Install leaflet dependencies
+      working-directory: bechtel.echartmobile/nuclide_leaflet
+      run: npm install
 
     - name: Compile mobile app
       env:
