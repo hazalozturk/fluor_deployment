@@ -11,6 +11,7 @@ jobs:
     runs-on: macOS-latest
 
     steps:
+    - uses: actions/checkout@v2
     - name: Use Node.js 10.x
       uses: actions/setup-node@v1
       with:
@@ -26,7 +27,6 @@ jobs:
       run: npm install -g react-scripts
 
     - name: Clone from assembla
-      uses: actions/checkout@v2
       env:
         USERNAME: ${{ secrets.ASSEMBLA_USER_NAME }}
         PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
