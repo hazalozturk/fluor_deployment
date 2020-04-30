@@ -112,8 +112,8 @@ jobs:
       working-directory: bechtel.echartmobile
       run: |
         cordova platform add ios
-        sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
-        #    cordova build
+        #sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
+        sed -i "" "s/iPhone Distribution/iPhone Distribution: Troy Web Consulting LLC (PY6PPLTJXR)/g" platforms/ios/cordova/build-release.xcconfig
 
     - name: Create Appfile
       env:
