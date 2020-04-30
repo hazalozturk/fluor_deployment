@@ -81,7 +81,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: leaflet-build
-        path: bechtel.echartmobile/nuclide_leaflet/build
+        path: bechtel.echartmobile/www
 
     ## Install Root Dependencies
     - name: Cache Root Node Modules
