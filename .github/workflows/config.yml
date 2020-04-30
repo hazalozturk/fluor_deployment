@@ -17,9 +17,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-        
+
     - name : Install Fastlane
-      run: 
+      run:
         brew install fastlane
 
     # Clone from assembla
@@ -33,7 +33,7 @@ jobs:
       run: |
         cd bechtel.echartmobile
         git checkout fastlane
-    
+
     - name: Install root dependencies
       run: |
         cd bechtel.echartmobile
@@ -47,14 +47,14 @@ jobs:
       run: |
         cd bechtel.echartmobile/nuclide_leaflet
         npm install
-        
+
     - name: Compile mobile app
       env:
         CI: ""
       run: |
         cd bechtel.echartmobile/nuclide_leaflet
         npm run build:mobile
-    
+
     # https://stackoverflow.com/a/46823492/10680786
     - name: Build mobile app with cordova
       run: |
@@ -66,21 +66,22 @@ jobs:
     - name: Copy fastlane folder to platforms/ios
       env:
         FASTLANE_APPFILE_TESTFLIGHT: ${{ secrets.FASTLANE_APPFILE_TESTFLIGHT }}
-      run: | 
-        cd bechtel.echartmobile
-        cp -r fastlane platforms/ios/
-        echo $FASTLANE_APPFILE_TESTFLIGHT > platforms/ios/fastlane/Appfile
-        
+      run: |
+#        cd bechtel.echartmobile
+#        cp -r fastlane platforms/ios/
+        echo $FASTLANE_APPFILE_TESTFLIGHT > fastlane/Appfile
+        cat fastlane/Appfile
+
     - name: Install pod dependencies
       run: |
         cd bechtel.echartmobile/platforms/ios
         pod install
-        
+
     - name: Build with fastlane
       run: |
         cd bechtel.echartmobile/platforms/ios
         fastlane ios beta
-        
+
     - name: Deploy to testflight with fastlane
       run: |
         cd bechtel.echartmobile/platforms/ios
