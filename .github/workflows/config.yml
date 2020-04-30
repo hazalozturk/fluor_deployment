@@ -70,7 +70,6 @@ jobs:
         #        cd bechtel.echartmobile
         #        cp -r fastlane platforms/ios/
         echo $FASTLANE_APPFILE_TESTFLIGHT > fastlane/Appfile
-        cat fastlane/Appfile
 
     - name: Install pod dependencies
       run: |
