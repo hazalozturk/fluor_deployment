@@ -114,7 +114,7 @@ jobs:
       working-directory: bechtel.echartmobile
       run: |
         cordova platform add ios
-        cordova build --device --buildFlag="DEVELOPMENT_TEAM=$FASTLANE_TEAM_ID"
+        cordova build --developmentTeam=$FASTLANE_TEAM_ID
 
     - name: Create Appfile
       env:
