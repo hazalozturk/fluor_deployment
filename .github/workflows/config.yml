@@ -109,8 +109,12 @@ jobs:
 
     # https://stackoverflow.com/a/46823492/10680786
     - name: Build mobile app with cordova
+      env:
+        FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
       working-directory: bechtel.echartmobile
-      run: cordova platform add ios
+      run: |
+        cordova platform add ios
+        cordova build --device --buildFlag="DEVELOPMENT_TEAM=$FASTLANE_TEAM_ID"
 
     - name: Create Appfile
       env:
