@@ -107,6 +107,13 @@ jobs:
     - name: Install Cordova
       run: npm install -g cordova
 
+    # https://stackoverflow.com/questions/39501020/code-sign-error-on-xcode-8-and-ios-10-cordova-project
+    - name: Create build spec for cordova
+      env:
+        CORDOVA_BUILD_JSON: ${{ secrets.CORDOVA_BUILD_JSON }}
+      working-directory: bechtel.echartmobile
+      run: echo $CORDOVA_BUILD_JSON > build.json
+
     # https://stackoverflow.com/a/46823492/10680786
     - name: Build mobile app with cordova
       env:
@@ -115,7 +122,7 @@ jobs:
       run: |
         cordova platform add ios
         sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
-        cordova build
+        cordova build --buildConfig=build.json ios --release
 
     - name: Create Appfile
       env:
