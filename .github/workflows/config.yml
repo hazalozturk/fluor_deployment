@@ -126,6 +126,19 @@ jobs:
       working-directory: bechtel.echartmobile/platforms/ios
       run: pod install
 
+    - name: Decode Certificates
+      env:
+        Certificate: ${{ secrets.Certificate }}
+      run: base64 -D -o /tmp/Certificates.p12 <<< $Certificate
+               
+    - name: Make Provisioning Profiles directory
+      run: mkdir -pv ~/Library/MobileDevice/Provisioning\ Profiles/
+      
+    - name: Decode Provisioning Profiles
+      env:
+        APP_STORE_PROFILE: ${{ secrets.APP_STORE_PROFILE }}
+      run: base64 -D -o ~/Library/MobileDevice/Provisioning\ Profiles/App_Store.mobileprovision <<< $APP_STORE_PROFILE
+      #
     - name: Build with fastlane
       working-directory: bechtel.echartmobile
       run: fastlane ios beta
