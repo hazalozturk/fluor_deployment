@@ -114,7 +114,8 @@ jobs:
       working-directory: bechtel.echartmobile
       run: |
         cordova platform add ios
-        cordova build --developmentTeam=$FASTLANE_TEAM_ID
+        sed -i "" "s/iPhone Distribution/iPhone Developer/g" platforms/ios/cordova/build-release.xcconfig
+        cordova build
 
     - name: Create Appfile
       env:
