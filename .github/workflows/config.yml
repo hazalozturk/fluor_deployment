@@ -11,7 +11,6 @@ env:
   FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
   FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
   FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
-  CORDOVA_BUILD_JSON: ${{ secrets.CORDOVA_BUILD_JSON }}
 
 jobs:
   build-leaflet:
@@ -140,6 +139,8 @@ jobs:
       run: base64 -D -o ~/Library/MobileDevice/Provisioning\ Profiles/App_Store.mobileprovision <<< $APP_STORE_PROFILE
       
     - name: Build with fastlane
+      env:
+        CORDOVA_BUILD_JSON: ${{ secrets.CORDOVA_BUILD_JSON }}
       working-directory: bechtel.echartmobile
       run: fastlane ios beta
 
