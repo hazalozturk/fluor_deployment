@@ -121,10 +121,6 @@ jobs:
       working-directory: bechtel.echartmobile/fastlane
       run: echo $FASTLANE_APPFILE_TESTFLIGHT > Appfile
 
-    - name: Install pod dependencies
-      working-directory: bechtel.echartmobile/platforms/ios
-      run: pod install
-
     - name: Decode Certificates
       env:
         Certificate: ${{ secrets.Certificate }}
