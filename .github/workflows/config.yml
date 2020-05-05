@@ -139,10 +139,12 @@ jobs:
       run: base64 -D -o ~/Library/MobileDevice/Provisioning\ Profiles/App_Store.mobileprovision <<< $APP_STORE_PROFILE
       
     - name: Build with fastlane
+      working-directory: bechtel.echartmobile
       env:
         CORDOVA_BUILD_JSON: ${{ secrets.CORDOVA_BUILD_JSON }}
-      working-directory: bechtel.echartmobile
-      run: fastlane ios beta
+      run: |
+        echo $CORDOVA_BUILD_JSON > build.json
+        fastlane ios beta
 
     - name: Deploy to testflight with fastlane
       working-directory: bechtel.echartmobile
