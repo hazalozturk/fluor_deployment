@@ -11,6 +11,7 @@ env:
   FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
   FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
   FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
+  CORDOVA_BUILD_JSON: ${{ secrets.CORDOVA_BUILD_JSON }}
 
 jobs:
   build-leaflet:
