@@ -96,6 +96,8 @@ jobs:
       run: | 
         mkdir ~/.ssh
         base64 -D -o ~/.ssh/id_rsa <<< $DEPLOY_KEY
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa github.com
 
     ## Install Root Dependencies
     - name: Cache Root Node Modules
@@ -115,7 +117,6 @@ jobs:
     - name: Install Cordova
       run: npm install -g cordova
 
-    # https://stackoverflow.com/a/46823492/10680786
     - name: Add iOS platform to cordova
       env:
         FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
