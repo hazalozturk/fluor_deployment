@@ -12,6 +12,7 @@ env:
   FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
   FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
   MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_SECRET }}
+  MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.DEPLOY_KEY }}
 
 jobs:
   build-leaflet:
