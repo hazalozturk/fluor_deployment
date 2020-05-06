@@ -11,6 +11,7 @@ env:
   FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
   FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
   FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
+  MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_SECRET }}
 
 jobs:
   build-leaflet:
@@ -89,6 +90,13 @@ jobs:
         name: leaflet-build
         path: bechtel.echartmobile/www
 
+    - name: Decode deploy key
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+      run: | 
+        mkdir ~/.ssh
+        base64 -D -o ~/.ssh/id_rsa <<< $DEPLOY_KEY
+
     ## Install Root Dependencies
     - name: Cache Root Node Modules
       uses: actions/cache@v1
@@ -120,23 +128,9 @@ jobs:
         FASTLANE_APPFILE_TESTFLIGHT: ${{ secrets.FASTLANE_APPFILE_TESTFLIGHT }}
       working-directory: bechtel.echartmobile/fastlane
       run: echo $FASTLANE_APPFILE_TESTFLIGHT > Appfile
-
-    - name: Install pod dependencies	
-      working-directory: bechtel.echartmobile/platforms/ios	
-      run: pod install
-
-    - name: Decode Certificates
-      env:
-        Certificate: ${{ secrets.Certificate }}
-      run: base64 -D -o /tmp/Certificates.p12 <<< $Certificate
                
     - name: Make Provisioning Profiles directory
       run: mkdir -pv ~/Library/MobileDevice/Provisioning\ Profiles/
-      
-    - name: Decode Provisioning Profiles
-      env:
-        APP_STORE_PROFILE: ${{ secrets.APP_STORE_PROFILE }}
-      run: base64 -D -o ~/Library/MobileDevice/Provisioning\ Profiles/App_Store.mobileprovision <<< $APP_STORE_PROFILE
       
     - name: Build with fastlane
       working-directory: bechtel.echartmobile
