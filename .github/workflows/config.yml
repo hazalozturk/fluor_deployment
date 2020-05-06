@@ -12,7 +12,6 @@ env:
   FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
   FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
   MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_SECRET }}
-  MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.DEPLOY_KEY }}
 
 jobs:
   build-leaflet:
@@ -75,6 +74,10 @@ jobs:
       with:
         node-version: 10.x
 
+    - uses: webfactory/ssh-agent@v0.2.0
+      with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+                  
     - name: Clone from assembla
       env:
         USERNAME: ${{ secrets.ASSEMBLA_USER_NAME }}
@@ -90,16 +93,6 @@ jobs:
       with:
         name: leaflet-build
         path: bechtel.echartmobile/www
-
-    - name: Decode deploy key
-      env:
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-      run: | 
-        mkdir ~/.ssh
-        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        cd ~/.ssh/; ssh-add
-        ssh-keyscan -t rsa github.com
 
     ## Install Root Dependencies
     - name: Cache Root Node Modules
