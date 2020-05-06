@@ -97,6 +97,7 @@ jobs:
         mkdir ~/.ssh
         echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
+        cd ~/.ssh/; ssh-add
         ssh-keyscan -t rsa github.com
 
     ## Install Root Dependencies
