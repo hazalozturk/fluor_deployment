@@ -86,6 +86,7 @@ jobs:
         PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
       run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git"
 
+    ## TODO: Change the branch name in production 
     - name: Checkout deployment branch
       working-directory: bechtel.echartmobile
       run: git checkout fastlane
