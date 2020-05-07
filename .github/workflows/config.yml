@@ -86,7 +86,7 @@ jobs:
         PASSWORD: ${{ secrets.ASSEMBLA_API_SECRET }}
       run: git clone "https://$USERNAME:$PASSWORD@git.assembla.com/troyweb/bechtel.echartmobile.git"
 
-    - name: Checkout develop branch
+    - name: Checkout deployment branch
       working-directory: bechtel.echartmobile
       run: git checkout fastlane
 
