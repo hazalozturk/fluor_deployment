@@ -139,6 +139,6 @@ jobs:
         echo $CORDOVA_BUILD_JSON > build.json
         fastlane ios beta
 
-    - name: Deploy to testflight with fastlane
+    - name: Deploy to testflight
       working-directory: bechtel.echartmobile
       run: fastlane ios upload
