@@ -136,6 +136,7 @@ jobs:
       env:
         CORDOVA_BUILD_JSON: ${{ secrets.CORDOVA_BUILD_JSON }}
       run: |
+        cordova plugin remove cordova-plugin-ionic-webview
         echo $CORDOVA_BUILD_JSON > build.json
         fastlane ios beta
 
