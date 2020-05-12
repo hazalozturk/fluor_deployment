@@ -121,7 +121,6 @@ jobs:
       working-directory: bechtel.echartmobile
       run: |
         cordova platform add https://github.com/apache/cordova-ios.git#master
-        cordova plugin remove cordova-plugin-ionic-webview
 
     - name: Create Appfile
       env:
