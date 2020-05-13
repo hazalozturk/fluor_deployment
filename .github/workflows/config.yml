@@ -115,7 +115,7 @@ jobs:
     - name: Install Cordova
       run: npm install -g cordova
 
-    - name: Add bleeding age version of iOS platform to cordova
+    - name: Add iOS platform to cordova
       env:
         FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
       working-directory: bechtel.echartmobile
